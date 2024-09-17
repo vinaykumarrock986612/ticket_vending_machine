@@ -22,3 +22,15 @@ flutter:
   uses-material-design: true
   assets:
     - assets/cards/
+    - assets/icons/
+  fonts:
+    - family: BasierCircle
+      fonts:
+        - asset: assets/fonts/basier/regular.ttf
+          weight: 400
+        - asset: assets/fonts/basier/medium.ttf
+          weight: 500
+        - asset: assets/fonts/basier/semi_bold.ttf
+          weight: 600
+        - asset: assets/fonts/basier/bold.ttf
+          weight: 700

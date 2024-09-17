@@ -2,9 +2,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../utils/app_extensions.dart';
 
-const _snapAnimationValue = 0.4;
+const _snapAnimationValue = 0.2;
 const _baseScale = 1.0;
-const _scaleIncrement = 0.12;
+const _scaleIncrement = 0.1;
 
 class VerticalCardSwiper extends StatefulWidget {
   final IndexedWidgetBuilder cardBuilder;
@@ -45,6 +45,13 @@ class VerticalCardSwiperState extends State<VerticalCardSwiper> with TickerProvi
 
       maxOffset = Offset(0, screenHeight - dy);
     });
+  }
+
+  @override
+  void dispose() {
+    cardController.dispose();
+    dismissedCardController.dispose();
+    super.dispose();
   }
 
   void onVerticalDragUpdate(DragUpdateDetails tapInfo) {
@@ -120,7 +127,8 @@ class VerticalCardSwiperState extends State<VerticalCardSwiper> with TickerProvi
   }
 
   Offset getDismissedCardPosition() {
-    final t = dismissedCardController.value;
+    final animation = CurvedAnimation(parent: dismissedCardController, curve: Curves.linearToEaseOut);
+    final t = animation.value;
     final dy = lerpDouble(maxOffset.dy, 0, t) ?? 0;
     return Offset(0, dy);
   }
@@ -142,19 +150,19 @@ class VerticalCardSwiperState extends State<VerticalCardSwiper> with TickerProvi
     );
   }
 
-  double getCardScale(double index) {
+  double getCardScale(num index) {
     index += dismissedCardCount;
     index += cardController.value + dismissedCardController.value.invertSign;
     return _baseScale + (index * _scaleIncrement);
   }
 
-  Offset getCardOffset(double index) {
+  Offset getCardOffset(num index) {
     index += dismissedCardCount;
     index += cardController.value + dismissedCardController.value.invertSign;
     return Offset(0.0, index * 45);
   }
 
-  Widget resizedCard(context, index) {
+  Widget resizedCard(BuildContext context, int index) {
     Widget child = widget.cardBuilder(context, index);
 
     child = Transform.scale(

@@ -1,44 +1,32 @@
 import 'package:flutter/material.dart';
 
+import '../constants/app_assets.dart';
+import 'app_colors.dart';
+
 ThemeData lightTheme() {
-  final colorScheme = ColorScheme.fromSwatch(
-    primarySwatch: Colors.teal,
+  final colorScheme = ColorScheme.light(
+    primary: lightColors.primary,
   );
   return themeStyle(
     ThemeData(
-      scaffoldBackgroundColor: const Color.fromRGBO(240, 240, 240, 1),
+      scaffoldBackgroundColor: lightColors.background,
       colorScheme: colorScheme,
+      fontFamily: AppFonts.primaryFamily,
     ),
   );
 }
-
 
 ThemeData themeStyle(ThemeData data) {
   final colorScheme = data.colorScheme;
 
   return data.copyWith(
     colorScheme: colorScheme,
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
-        shape: const StadiumBorder(),
+    textTheme: data.textTheme.copyWith(
+      titleMedium: TextStyle(
+        color: lightColors.primaryText,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
       ),
     ),
-    outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: colorScheme.primary,
-        shape: const StadiumBorder(),
-      ),
-    ),
-    listTileTheme: ListTileThemeData(
-      style: ListTileStyle.list,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      tileColor: colorScheme.surface,
-      selectedColor: colorScheme.onPrimary,
-      selectedTileColor: colorScheme.primary,
-    ),
-    visualDensity: VisualDensity.standard,
-    shadowColor: const Color(0xFF868686),
   );
 }
