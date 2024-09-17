@@ -7,4 +7,5 @@ class AppStrings {
   static const upi = "UPI";
   static const card = "Card";
   static const netBanking = "Net Banking";
+  static const enterCvvNumber = "Enter CVV Number";
 }

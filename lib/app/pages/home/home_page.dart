@@ -48,7 +48,6 @@ class _HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
   final passenger = "1 Adult";
   final amount = "\$ 580";
 
-
   @override
   void dispose() {
     cardSlideController.dispose();

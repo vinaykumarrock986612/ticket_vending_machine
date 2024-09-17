@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../../constants/app_strings.dart';
 import '../../constants/hero_tags.dart';
+import '../../utils/app_extensions.dart';
 import '../../widgets/app_hero_widget.dart';
+import '../../widgets/app_numpad.dart';
 import '../../widgets/base_widgets.dart';
 import '../../widgets/card_with_shadow.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/gap.dart';
+import '../../widgets/rotate_animated_text.dart';
 
 class PaymentsPage extends StatefulWidget {
   final String card;
@@ -29,6 +32,22 @@ class PaymentsPage extends StatefulWidget {
 }
 
 class _PaymentsPageState extends BaseState<PaymentsPage> {
+  final cardKey = GlobalKey();
+  final cvvController = TextEditingController();
+
+  double? cardWidth;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.endOfFrame.then((value) {
+      final box = cardKey.currentContext?.findAncestorRenderObjectOfType() as RenderBox?;
+      cardWidth = box?.size.width;
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,17 +55,40 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
         titleWidget: appBarTitle(),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Center(
-            child: AppHero(
-              transitionOnUserGestures: true,
-              tag: widget.card,
-              child: CardWithShadow(
-                filepath: widget.card,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: Border.all(color: theme.colors.border),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  AppHero(
+                    transitionOnUserGestures: true,
+                    tag: widget.card,
+                    child: CardWithShadow(
+                      key: cardKey,
+                      filepath: widget.card,
+                    ),
+                  ),
+                  const VerticalGap(gap: 12),
+                  SizedBox(
+                    width: cardWidth,
+                    child: cvvField(),
+                  ),
+                ],
               ),
             ),
           ),
+          const Spacer(),
+          AppNumPad(
+            controller: cvvController,
+            maxLength: 3,
+          ),
+          const VerticalGap(gap: 12),
         ],
       ),
     );
@@ -74,6 +116,32 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget cvvField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              AppStrings.enterCvvNumber,
+              style: theme.textTheme.bodyMedium,
+            ),
+          ),
+          Expanded(
+            child: ListenableBuilder(
+              listenable: cvvController,
+              builder: (context, child) {
+                return RotateAnimatedText(
+                  text: cvvController.text,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
