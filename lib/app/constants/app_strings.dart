@@ -4,6 +4,7 @@ class AppStrings {
   static const appName = "Ticket Vending Machine";
   static const payments = "Payments";
   static const payableAmount = "Payable Amount";
+  static const completePayment = "Complete Payment";
   static const upi = "UPI";
   static const card = "Card";
   static const netBanking = "Net Banking";

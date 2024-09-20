@@ -8,6 +8,7 @@ import '../../../constants/app_strings.dart';
 import '../../../constants/hero_tags.dart';
 import '../../../utils/app_extensions.dart';
 import '../../../widgets/app_hero_widget.dart';
+import '../../../widgets/bordered_container.dart';
 import '../../../widgets/gap.dart';
 
 class TicketFareCard extends StatelessWidget {
@@ -26,21 +27,16 @@ class TicketFareCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
+    return BorderedContainer(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: theme.colors.border,
-        ),
-      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /// Travel Route, Passenger
           Expanded(child: passengerDetails(context)),
+
+          /// Ticket Fare
           ticketAmount(context),
         ],
       ),

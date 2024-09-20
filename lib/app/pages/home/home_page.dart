@@ -109,7 +109,6 @@ class _HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
 
                 return AppHero(
                   tag: card,
-                  transitionOnUserGestures: true,
                   flightShuttleBuilder: flightShuttleBuilder,
                   child: Transform.rotate(
                     angle: -_kCardRotation,

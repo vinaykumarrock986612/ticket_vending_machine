@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../constants/app_strings.dart';
 import '../../constants/hero_tags.dart';
-import '../../utils/app_extensions.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/app_hero_widget.dart';
 import '../../widgets/app_numpad.dart';
 import '../../widgets/base_widgets.dart';
+import '../../widgets/bordered_container.dart';
 import '../../widgets/card_with_shadow.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/gap.dart';
@@ -33,6 +34,7 @@ class PaymentsPage extends StatefulWidget {
 
 class _PaymentsPageState extends BaseState<PaymentsPage> {
   final cardKey = GlobalKey();
+  final buttonKey = GlobalKey<AppButtonState>();
   final cvvController = TextEditingController();
 
   double? cardWidth;
@@ -46,6 +48,14 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
       cardWidth = box?.size.width;
       setState(() {});
     });
+
+    cvvController.addListener(showPaymentButton);
+  }
+
+  void showPaymentButton() {
+    if (cvvController.text.length > 2) {
+      buttonKey.currentState?.show();
+    }
   }
 
   @override
@@ -55,40 +65,51 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
         titleWidget: appBarTitle(),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                border: Border.all(color: theme.colors.border),
-                borderRadius: BorderRadius.circular(20),
-              ),
+          BorderedContainer(
+            child: Column(
+              children: [
+                /// Card
+                AppHero(
+                  tag: widget.card,
+                  child: CardWithShadow(
+                    key: cardKey,
+                    filepath: widget.card,
+                  ),
+                ),
+                const VerticalGap(gap: 12),
+
+                /// CVV Field
+                SizedBox(
+                  width: cardWidth,
+                  child: cvvField(),
+                ),
+
+                const VerticalGap(gap: 12),
+
+                /// Make Payment Button
+                AppButton(
+                  key: buttonKey,
+                  width: cardWidth,
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  label: AppStrings.completePayment,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 children: [
-                  AppHero(
-                    transitionOnUserGestures: true,
-                    tag: widget.card,
-                    child: CardWithShadow(
-                      key: cardKey,
-                      filepath: widget.card,
-                    ),
-                  ),
-                  const VerticalGap(gap: 12),
-                  SizedBox(
-                    width: cardWidth,
-                    child: cvvField(),
+                  const VerticalGap(gap: 22),
+                  AppNumPad(
+                    controller: cvvController,
+                    maxLength: 3,
                   ),
                 ],
               ),
             ),
           ),
-          const Spacer(),
-          AppNumPad(
-            controller: cvvController,
-            maxLength: 3,
-          ),
-          const VerticalGap(gap: 12),
         ],
       ),
     );

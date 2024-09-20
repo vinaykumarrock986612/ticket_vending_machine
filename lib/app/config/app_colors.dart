@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 const lightColors = AppColors(
-  primary: Color(0xff477BFF),
+  primary: Color(0xff5438FF),
+  secondary: Color(0xff3A21D0),
   background: Color(0xffffffff),
   secondaryBackground: Color(0xffF4F4F4),
   tertiaryBackground: Color(0xffE7E7E7),
@@ -15,6 +16,7 @@ const lightColors = AppColors(
 
 class AppColors {
   final Color primary;
+  final Color secondary;
   final Color background;
   final Color secondaryBackground;
   final Color tertiaryBackground;
@@ -27,6 +29,7 @@ class AppColors {
 
   const AppColors({
     required this.primary,
+    required this.secondary,
     required this.background,
     required this.secondaryBackground,
     required this.tertiaryBackground,
