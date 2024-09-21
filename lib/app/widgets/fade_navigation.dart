@@ -12,6 +12,8 @@ const int _kMaxPageBackAnimationTime = 300;
 class FadedPageRoute<T> extends PageRoute<T> {
   FadedPageRoute({
     required this.child,
+    this.gestureEnabled = true,
+    this.duration = const Duration(milliseconds: 500),
   });
 
   @override
@@ -21,6 +23,8 @@ class FadedPageRoute<T> extends PageRoute<T> {
   String get barrierLabel => "";
 
   final Widget child;
+  final bool gestureEnabled;
+  final Duration duration;
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
@@ -28,7 +32,7 @@ class FadedPageRoute<T> extends PageRoute<T> {
       opacity: animation,
       child: BackGestureDetector(
         child: child,
-        enabledCallback: () => true,
+        enabledCallback: () => gestureEnabled,
         onStartPopGesture: () => startPopGesture(this),
       ),
     );
@@ -38,7 +42,7 @@ class FadedPageRoute<T> extends PageRoute<T> {
   bool get maintainState => true;
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 500);
+  Duration get transitionDuration => duration;
 
   @override
   bool get popGestureEnabled => true;

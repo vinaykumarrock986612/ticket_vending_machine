@@ -6,23 +6,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../constants/app_assets.dart';
 import '../../../constants/app_strings.dart';
 import '../../../constants/hero_tags.dart';
+import '../../../models/passenger_details.dart';
 import '../../../utils/app_extensions.dart';
 import '../../../widgets/app_hero_widget.dart';
 import '../../../widgets/bordered_container.dart';
 import '../../../widgets/gap.dart';
 
 class TicketFareCard extends StatelessWidget {
-  final String from;
-  final String to;
-  final String passenger;
-  final String amount;
+  final PassengerDetails passenger;
 
   const TicketFareCard({
     super.key,
-    required this.from,
-    required this.to,
     required this.passenger,
-    required this.amount,
   });
 
   @override
@@ -52,7 +47,7 @@ class TicketFareCard extends StatelessWidget {
           labelWidget: Row(
             children: [
               Text(
-                from,
+                passenger.from,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -62,7 +57,7 @@ class TicketFareCard extends StatelessWidget {
                 child: SvgPicture.asset(SvgAssets.rightArrow),
               ),
               Text(
-                to,
+                passenger.to,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -74,7 +69,7 @@ class TicketFareCard extends StatelessWidget {
         iconWithLabel(
           svgIconPath: SvgAssets.person,
           labelWidget: Text(
-            passenger,
+            passenger.passenger,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colors.tertiaryText,
             ),
@@ -101,7 +96,7 @@ class TicketFareCard extends StatelessWidget {
           tag: HeroTags.amount,
           flightShuttleBuilder: fareAmountShuttleBuilder,
           child: Text(
-            amount,
+            passenger.amount,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               fontSize: 24,
@@ -142,7 +137,7 @@ class TicketFareCard extends StatelessWidget {
       animation: animation,
       builder: (context, _) {
         return Text(
-          amount,
+          passenger.amount,
           maxLines: 1,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,

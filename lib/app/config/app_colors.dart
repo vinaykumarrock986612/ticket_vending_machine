@@ -40,4 +40,13 @@ class AppColors {
     required this.iconColor,
     required this.border,
   });
+
+  final gradient = const <Color>[
+    Color(0x66FBFF32),
+    Color(0x66FF60E5),
+    Color(0x66359EFF),
+  ];
+
+
+  final machineColor = const Color(0xff2F2F2F);
 }

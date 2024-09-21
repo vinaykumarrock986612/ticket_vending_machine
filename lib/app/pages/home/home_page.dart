@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../constants/app_assets.dart';
 import '../../constants/app_strings.dart';
+import '../../models/passenger_details.dart';
 import '../../widgets/app_hero_widget.dart';
 import '../../widgets/base_widgets.dart';
 import '../../widgets/card_with_shadow.dart';
@@ -43,10 +44,12 @@ class _HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
     AppStrings.netBanking,
   ];
 
-  final from = "HBX";
-  final to = "BLR";
-  final passenger = "1 Adult";
-  final amount = "\$ 580";
+  final passenger = const PassengerDetails(
+    from: "HBX",
+    to: "BLR",
+    passenger: "1 Adult",
+    amount: "\$ 580",
+  );
 
   @override
   void dispose() {
@@ -61,10 +64,7 @@ class _HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
         FadedPageRoute(
           child: PaymentsPage(
             card: card,
-            from: from,
-            to: to,
             passenger: passenger,
-            amount: amount,
           ),
         ),
       );
@@ -87,10 +87,7 @@ class _HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
       body: Column(
         children: [
           TicketFareCard(
-            from: from,
-            to: to,
             passenger: passenger,
-            amount: amount,
           ),
           const VerticalGap(gap: 25),
           SegmentedTabBar(
@@ -109,7 +106,6 @@ class _HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
 
                 return AppHero(
                   tag: card,
-                  flightShuttleBuilder: flightShuttleBuilder,
                   child: Transform.rotate(
                     angle: -_kCardRotation,
                     child: GestureDetector(
@@ -125,39 +121,6 @@ class _HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
           ),
         ],
       ),
-    );
-  }
-
-  Widget flightShuttleBuilder(
-    BuildContext flightContext,
-    Animation<double> animation,
-    HeroFlightDirection flightDirection,
-    BuildContext fromHeroContext,
-    BuildContext toHeroContext,
-  ) {
-    Widget child = fromHeroContext.widget;
-    final curvedAnimation = CurvedAnimation(
-      curve: Curves.easeOutBack,
-      parent: animation,
-    );
-
-    if (flightDirection == HeroFlightDirection.pop) {
-      child = toHeroContext.widget;
-      curvedAnimation.curve = Curves.easeOut;
-    }
-
-    return AnimatedBuilder(
-      animation: animation,
-      child: child,
-      builder: (context, child) {
-        return Transform.rotate(
-          angle: Tween(
-            begin: 0.0,
-            end: _kCardRotation,
-          ).animate(curvedAnimation).value,
-          child: child,
-        );
-      },
     );
   }
 

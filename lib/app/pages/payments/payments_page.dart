@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../constants/app_strings.dart';
 import '../../constants/hero_tags.dart';
+import '../../models/passenger_details.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_hero_widget.dart';
 import '../../widgets/app_numpad.dart';
@@ -9,23 +12,21 @@ import '../../widgets/base_widgets.dart';
 import '../../widgets/bordered_container.dart';
 import '../../widgets/card_with_shadow.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fade_navigation.dart';
 import '../../widgets/gap.dart';
 import '../../widgets/rotate_animated_text.dart';
+import '../insert_card/insert_card_screen.dart';
+
+const _kCardRotation = pi / 2;
 
 class PaymentsPage extends StatefulWidget {
   final String card;
-  final String from;
-  final String to;
-  final String passenger;
-  final String amount;
+  final PassengerDetails passenger;
 
   const PaymentsPage({
     super.key,
     required this.card,
-    required this.from,
-    required this.to,
     required this.passenger,
-    required this.amount,
   });
 
   @override
@@ -45,7 +46,7 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
 
     WidgetsBinding.instance.endOfFrame.then((value) {
       final box = cardKey.currentContext?.findAncestorRenderObjectOfType() as RenderBox?;
-      cardWidth = box?.size.width;
+      cardWidth = box?.size.width ?? 322;
       setState(() {});
     });
 
@@ -56,6 +57,20 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
     if (cvvController.text.length > 2) {
       buttonKey.currentState?.show();
     }
+  }
+
+  void onCompleteTap() async {
+    await Navigator.push(
+      context,
+      FadedPageRoute(
+        gestureEnabled: false,
+        duration: const Duration(milliseconds: 1000),
+        child: InsertCardScreen(
+          card: widget.card,
+          passenger: widget.passenger,
+        ),
+      ),
+    );
   }
 
   @override
@@ -72,6 +87,7 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
                 /// Card
                 AppHero(
                   tag: widget.card,
+                  flightShuttleBuilder: flightShuttleBuilder,
                   child: CardWithShadow(
                     key: cardKey,
                     filepath: widget.card,
@@ -93,6 +109,7 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
                   width: cardWidth,
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   label: AppStrings.completePayment,
+                  onTap: onCompleteTap,
                 ),
               ],
             ),
@@ -129,7 +146,7 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
         AppHero(
           tag: HeroTags.amount,
           child: Text(
-            widget.amount,
+            widget.passenger.amount,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               fontSize: 18,
@@ -163,6 +180,39 @@ class _PaymentsPageState extends BaseState<PaymentsPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
+  ) {
+    Widget child = fromHeroContext.widget;
+    final curvedAnimation = CurvedAnimation(
+      curve: Curves.easeOutBack,
+      parent: animation,
+    );
+
+    if (flightDirection == HeroFlightDirection.pop) {
+      child = toHeroContext.widget;
+      curvedAnimation.curve = Curves.easeOut;
+    }
+
+    return AnimatedBuilder(
+      animation: animation,
+      child: child,
+      builder: (context, child) {
+        return Transform.rotate(
+          angle: Tween(
+            begin: 0.0,
+            end: _kCardRotation,
+          ).animate(curvedAnimation).value,
+          child: child,
+        );
+      },
     );
   }
 }
