@@ -49,4 +49,5 @@ class AppColors {
 
 
   final machineColor = const Color(0xff2F2F2F);
+  final greenScreen = const Color(0xff8AD367);
 }

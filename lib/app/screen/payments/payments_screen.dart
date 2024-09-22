@@ -19,21 +19,21 @@ import '../insert_card/insert_card_screen.dart';
 
 const _kCardRotation = pi / 2;
 
-class PaymentsPage extends StatefulWidget {
+class PaymentScreen extends StatefulWidget {
   final String card;
   final PassengerDetails passenger;
 
-  const PaymentsPage({
+  const PaymentScreen({
     super.key,
     required this.card,
     required this.passenger,
   });
 
   @override
-  State<PaymentsPage> createState() => _PaymentsPageState();
+  State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
-class _PaymentsPageState extends BaseState<PaymentsPage> {
+class _PaymentScreenState extends BaseState<PaymentScreen> {
   final cardKey = GlobalKey();
   final buttonKey = GlobalKey<AppButtonState>();
   final cvvController = TextEditingController();

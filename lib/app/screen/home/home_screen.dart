@@ -13,19 +13,19 @@ import '../../widgets/fade_navigation.dart';
 import '../../widgets/gap.dart';
 import '../../widgets/segmented_tab_bar.dart';
 import '../../widgets/vertical_card_swiper.dart';
-import '../payments/payments_page.dart';
+import '../payments/payments_screen.dart';
 import 'components/ticket_fare_card.dart';
 
 const _kCardRotation = pi / 2;
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
+class _HomeScreenState extends BaseState<HomeScreen> with TickerProviderStateMixin {
   final verticalSwiperKey = GlobalKey<VerticalCardSwiperState>();
   late final tabController = TabController(length: 3, vsync: this, initialIndex: selectedTabIndex);
   late final cardSlideController = AnimationController(vsync: this);
@@ -62,7 +62,7 @@ class _HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
     if (verticalSwiperKey.currentState?.foregroundCardIndex == index) {
       Navigator.of(context).push(
         FadedPageRoute(
-          child: PaymentsPage(
+          child: PaymentScreen(
             card: card,
             passenger: passenger,
           ),
