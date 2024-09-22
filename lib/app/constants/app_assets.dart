@@ -1,9 +1,14 @@
 const _root = "assets";
 const _cards = "cards";
 const _icons = "icons";
+const _images = "images";
 
 class AppImages {
   const AppImages._();
+
+  static const _imagesPath = "$_root/$_images";
+
+  static const barcode = "$_imagesPath/barcode.png";
 }
 
 class SvgAssets {

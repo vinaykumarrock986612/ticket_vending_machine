@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const lightColors = AppColors(
-  primary: Color(0xff5438FF),
+  primary: Color(0xff3864FF),
   secondary: Color(0xff3A21D0),
   background: Color(0xffffffff),
   secondaryBackground: Color(0xffF4F4F4),

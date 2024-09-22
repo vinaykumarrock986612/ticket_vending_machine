@@ -69,7 +69,7 @@ class TicketFareCard extends StatelessWidget {
         iconWithLabel(
           svgIconPath: SvgAssets.person,
           labelWidget: Text(
-            passenger.passenger,
+            passenger.passengerCount,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colors.tertiaryText,
             ),

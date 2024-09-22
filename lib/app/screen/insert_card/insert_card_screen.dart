@@ -3,17 +3,22 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../../constants/hero_tags.dart';
 import '../../models/passenger_details.dart';
 import '../../widgets/app_hero_widget.dart';
 import '../../widgets/base_widgets.dart';
 import '../../widgets/card_with_shadow.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fade_navigation.dart';
 import '../../widgets/gradient_shadow_box.dart';
+import '../booking_successful/booking_successful_screen.dart';
+import 'components/travel_receipt.dart';
 import 'components/vending_machine.dart';
 
 const _kCardRotation = pi / 2;
 const _kCardIdealScale = 0.6;
 const _kCardMinScale = 0.26;
+const _kReceiptScale = 0.2;
 
 class InsertCardScreen extends StatefulWidget {
   final PassengerDetails passenger;
@@ -31,13 +36,17 @@ class InsertCardScreen extends StatefulWidget {
 
 class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProviderStateMixin {
   final cardKey = GlobalKey();
+  final receiptKey = GlobalKey();
   final machineKey = GlobalKey<VendingMachineState>();
   late final machineScaleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
   late final cardInsertController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1300));
+  late final receiptController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
   late final cardAnimation = CurvedAnimation(parent: cardInsertController, curve: Curves.linearToEaseOut);
 
   Offset? cardOffset;
+  Offset? receiptOffset;
   Size? cardSize;
+  Size? receiptSize;
 
   @override
   void initState() {
@@ -45,6 +54,7 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
     WidgetsBinding.instance.endOfFrame.then((value) async {
       setState(() {
         getCardSize();
+        getReceiptSize();
       });
       startTransaction();
     });
@@ -62,11 +72,31 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
     await machineScaleController.forward();
     await Future.delayed(const Duration(milliseconds: 500));
     await cardInsertController.forward();
+    await Future.delayed(const Duration(milliseconds: 500));
+    await receiptController.forward();
+    toBookingReceipt();
+  }
+
+  void toBookingReceipt() {
+    Navigator.push(
+      context,
+      FadedPageRoute(
+        duration: const Duration(milliseconds: 1000),
+        gestureEnabled: false,
+        child: BookingSuccessfulScreen(passenger: widget.passenger),
+      ),
+    );
   }
 
   void getCardSize() {
     final box = cardKey.currentContext?.findRenderObject() as RenderBox?;
     cardSize = box?.size;
+  }
+
+  void getReceiptSize() {
+    final box = receiptKey.currentContext?.findRenderObject() as RenderBox?;
+    receiptSize = box?.size;
+    receiptOffset = box?.localToGlobal(Offset.zero);
   }
 
   Offset getCardOffset() {
@@ -81,6 +111,11 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
     ).evaluate(cardAnimation);
   }
 
+  Offset getReceiptOffset() {
+    final dx = -(((screenWidth - 90) * 0.2));
+    return Tween<Offset>(begin: Offset(dx, (receiptOffset?.dy ?? 0)), end: Offset(dx, 300)).evaluate(receiptController);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -88,12 +123,13 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
       child: Scaffold(
         appBar: const CustomAppBar(),
         body: AnimatedBuilder(
-          animation: Listenable.merge([machineScaleController, cardInsertController]),
+          animation: Listenable.merge([machineScaleController, cardInsertController, receiptController]),
           builder: (context, child) {
             return Stack(
               fit: StackFit.expand,
               alignment: Alignment.bottomCenter,
               children: [
+                /// Vending Machine
                 Positioned(
                   top: 0,
                   child: Transform.scale(
@@ -103,6 +139,8 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
                     ),
                   ),
                 ),
+
+                /// Card
                 Positioned(
                   bottom: 0,
                   child: ClipPath(
@@ -117,6 +155,28 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
                         tag: widget.card,
                         flightShuttleBuilder: flightShuttleBuilder,
                         child: buildCard(),
+                      ),
+                    ),
+                  ),
+                ),
+
+                ClipPath(
+                  clipper: ReceiptSlotClipper(
+                    screenSize: screenSize,
+                    receiptOffset: receiptOffset,
+                    slotOffset: machineKey.currentState?.receiptSlotOffset,
+                  ),
+                  child: Transform.translate(
+                    offset: getReceiptOffset(),
+                    child: Transform.scale(
+                      scale: _kReceiptScale,
+                      alignment: Alignment.topRight,
+                      child: AppHero(
+                        tag: HeroTags.receipt,
+                        child: TravelReceipt(
+                          key: receiptKey,
+                          passenger: widget.passenger,
+                        ),
                       ),
                     ),
                   ),
@@ -220,6 +280,40 @@ class CardSlotClipper extends CustomClipper<Path> {
     path.addRect(
       Rect.fromPoints(
         Offset(-100, -effectiveHeight),
+        Offset(screenSize.width, 1000),
+      ),
+    );
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
+
+class ReceiptSlotClipper extends CustomClipper<Path> {
+  const ReceiptSlotClipper({
+    required this.screenSize,
+    required this.receiptOffset,
+    required this.slotOffset,
+  });
+
+  final Size screenSize;
+  final Offset? receiptOffset;
+  final Offset? slotOffset;
+
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+
+    final cardDy = receiptOffset?.dy ?? 0;
+    final slotDy = slotOffset?.dy ?? 0;
+
+    path.addRect(
+      Rect.fromPoints(
+        Offset(0, slotDy - cardDy),
         Offset(screenSize.width, 1000),
       ),
     );

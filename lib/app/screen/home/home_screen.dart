@@ -44,11 +44,18 @@ class _HomeScreenState extends BaseState<HomeScreen> with TickerProviderStateMix
     AppStrings.netBanking,
   ];
 
-  final passenger = const PassengerDetails(
+  final passenger = PassengerDetails(
     from: "HBX",
     to: "BLR",
-    passenger: "1 Adult",
+    passengerCount: "1 Adult",
     amount: "\$ 580",
+    name: 'Vinayak Baise',
+    busNumber: "KA12489",
+    terminal: "T6",
+    gate: "21",
+    seatNumber: "D17",
+    departureDate: DateTime.now(),
+    arrivalDate: DateTime.now().add(const Duration(days: 1)),
   );
 
   @override

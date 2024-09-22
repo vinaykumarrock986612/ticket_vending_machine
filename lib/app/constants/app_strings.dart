@@ -9,4 +9,9 @@ class AppStrings {
   static const card = "Card";
   static const netBanking = "Net Banking";
   static const enterCvvNumber = "Enter CVV Number";
+  static const passenger = "Passenger";
+  static const seat = "Seat";
+  static const terminal = "Terminal";
+  static const gate = "Gate";
+  static const busNumber = "Bus Number";
 }
