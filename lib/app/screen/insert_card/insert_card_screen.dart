@@ -82,7 +82,7 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
     await Future.delayed(const Duration(milliseconds: 100));
     await receiptController.forward();
     await Future.delayed(const Duration(milliseconds: 500));
-    // toBookingReceipt();
+    toBookingReceipt();
   }
 
   void toBookingReceipt() {
