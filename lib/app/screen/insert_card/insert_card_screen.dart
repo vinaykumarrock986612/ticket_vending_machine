@@ -82,7 +82,7 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
     await Future.delayed(const Duration(milliseconds: 100));
     await receiptController.forward();
     await Future.delayed(const Duration(milliseconds: 500));
-    toBookingReceipt();
+    // toBookingReceipt();
   }
 
   void toBookingReceipt() {
@@ -122,7 +122,7 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
 
   Offset getReceiptOffset() {
     final dx = -(((screenWidth - 90) * 0.2));
-    return Tween<Offset>(begin: Offset(dx, (receiptOffset?.dy ?? 0)), end: Offset(dx, 300)).evaluate(receiptController);
+    return Tween<Offset>(begin: Offset(dx, (receiptOffset?.dy ?? 0)), end: Offset(dx, 320)).evaluate(receiptController);
   }
 
   @override
