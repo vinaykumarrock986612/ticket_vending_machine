@@ -1,9 +1,15 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
+import '../../../constants/app_strings.dart';
 import '../../../utils/app_extensions.dart';
 import '../../../widgets/base_widgets.dart';
 import '../../../widgets/gap.dart';
+import '../../../widgets/gradient_loader.dart';
 import 'display_frame.dart';
+import 'otp_field.dart';
 
 class VendingMachine extends StatefulWidget {
   const VendingMachine({super.key});
@@ -12,11 +18,16 @@ class VendingMachine extends StatefulWidget {
   State<VendingMachine> createState() => VendingMachineState();
 }
 
-class VendingMachineState extends BaseState<VendingMachine> {
+class VendingMachineState extends BaseState<VendingMachine> with SingleTickerProviderStateMixin {
   final _cardSlotKey = GlobalKey();
   final _receiptSlotKey = GlobalKey();
+
+  late final processCardController = AnimationController(vsync: this, duration: const Duration(milliseconds: 5000));
+
   double? cardSlotWidth;
   double? receiptSlotWidth;
+
+  bool showLoader = false;
 
   Offset? get cardSlotOffset {
     final box = _cardSlotKey.currentContext?.findRenderObject() as RenderBox?;
@@ -28,6 +39,36 @@ class VendingMachineState extends BaseState<VendingMachine> {
     final box = _receiptSlotKey.currentContext?.findRenderObject() as RenderBox?;
     receiptSlotWidth = box?.size.width;
     return box?.localToGlobal(Offset.zero);
+  }
+
+  String get currentStepMessage {
+    final t = processCardController.value;
+
+    if (t == 0) {
+      return AppStrings.insertCard;
+    } else if (t > 0 && t < 0.25) {
+      return AppStrings.verifyingYourCard;
+    } else if (t > 0.65 && t < 0.9) {
+      return AppStrings.allDone;
+    } else if (t > 0.9) {
+      return AppStrings.printingYourTicket;
+    }
+    return "";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    processCardController.addStatusListener((status) {
+      showLoader = true;
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    processCardController.dispose();
+    super.dispose();
   }
 
   @override
@@ -44,6 +85,14 @@ class VendingMachineState extends BaseState<VendingMachine> {
       child: Column(
         children: [
           const VerticalGap(gap: 25),
+          SizedBox(
+            height: 4,
+            child: Visibility(
+              visible: showLoader,
+              child: const GradientLoader(),
+            ),
+          ),
+          const VerticalGap(gap: 20),
           machineDisplay(),
           const VerticalGap(gap: 25),
           machineControls(),
@@ -60,10 +109,31 @@ class VendingMachineState extends BaseState<VendingMachine> {
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: DisplayFrame(
         height: 165,
-        child: Container(
-          color: theme.colors.greenScreen,
-          alignment: Alignment.center,
-          child: const Text("Insert Card"),
+        child: AnimatedBuilder(
+          animation: processCardController,
+          builder: (context, child) {
+            return Container(
+              color: theme.colors.greenScreen,
+              alignment: Alignment.center,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) {
+                  final rotation = lerpDouble(pi / 2, 0, animation.value)!;
+                  return Transform(
+                    transform: Matrix4.identity()..rotateX(rotation),
+                    child: child,
+                  );
+                },
+                child: currentStepMessage.isEmpty
+                    ? const OtpField()
+                    : Text(
+                        currentStepMessage,
+                        key: ValueKey(currentStepMessage),
+                        style: theme.textTheme.titleMedium,
+                      ),
+              ),
+            );
+          },
         ),
       ),
     );

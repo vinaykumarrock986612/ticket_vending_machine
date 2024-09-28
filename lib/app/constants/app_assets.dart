@@ -26,6 +26,7 @@ class SvgAssets {
   static const bus = "$_iconsPath/bus.svg";
   static const person = "$_iconsPath/person.svg";
   static const rightArrow = "$_iconsPath/right_arrow.svg";
+  static const bookingDone = "$_iconsPath/booking_done.svg";
 }
 
 class AppFonts {

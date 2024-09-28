@@ -17,7 +17,7 @@ import 'components/vending_machine.dart';
 
 const _kCardRotation = pi / 2;
 const _kCardIdealScale = 0.6;
-const _kCardMinScale = 0.26;
+const _kCardMinScale = 0.3;
 const _kReceiptScale = 0.2;
 
 class InsertCardScreen extends StatefulWidget {
@@ -39,7 +39,8 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
   final receiptKey = GlobalKey();
   final machineKey = GlobalKey<VendingMachineState>();
   late final machineScaleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-  late final cardInsertController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1300));
+  late final insertForwardController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+  late final cardInsertController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
   late final receiptController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
   late final cardAnimation = CurvedAnimation(parent: cardInsertController, curve: Curves.linearToEaseOut);
 
@@ -51,7 +52,7 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.endOfFrame.then((value) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       setState(() {
         getCardSize();
         getReceiptSize();
@@ -62,8 +63,10 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
 
   @override
   void dispose() {
+    insertForwardController.dispose();
     machineScaleController.dispose();
     cardInsertController.dispose();
+    receiptController.dispose();
     super.dispose();
   }
 
@@ -72,8 +75,13 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
     await machineScaleController.forward();
     await Future.delayed(const Duration(milliseconds: 500));
     await cardInsertController.forward();
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 50));
+    await insertForwardController.forward();
+    await Future.delayed(const Duration(milliseconds: 100));
+    await machineKey.currentState?.processCardController.forward();
+    await Future.delayed(const Duration(milliseconds: 100));
     await receiptController.forward();
+    await Future.delayed(const Duration(milliseconds: 500));
     toBookingReceipt();
   }
 
@@ -101,9 +109,10 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
 
   Offset getCardOffset() {
     final slotOffset = machineKey.currentState?.cardSlotOffset ?? Offset.zero;
-    final resetDx = (screenSize.width / 2) - 15;
+    final scaleDownWidth = ((cardSize?.height ?? 0) * _kCardIdealScale * _kCardMinScale) / 2.1;
+    final resetDx = (screenSize.width / 2) - scaleDownWidth;
     final effectiveDx = -resetDx + slotOffset.dx;
-    final effectiveDy = screenSize.height - (slotOffset.dy + ((cardSize?.height ?? 0) / 2));
+    final effectiveDy = screenSize.height - (slotOffset.dy + ((cardSize?.width ?? 0) / 1.7));
 
     return Tween<Offset>(
       begin: Offset.zero,
@@ -119,11 +128,16 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      // canPop: false,
+      canPop: false,
       child: Scaffold(
         appBar: const CustomAppBar(),
         body: AnimatedBuilder(
-          animation: Listenable.merge([machineScaleController, cardInsertController, receiptController]),
+          animation: Listenable.merge([
+            machineScaleController,
+            cardInsertController,
+            receiptController,
+            insertForwardController,
+          ]),
           builder: (context, child) {
             return Stack(
               fit: StackFit.expand,
@@ -214,6 +228,14 @@ class _InsertCardScreenState extends BaseState<InsertCardScreen> with TickerProv
 
     child = Transform.translate(
       offset: getCardOffset(),
+      child: child,
+    );
+
+    child = Transform.translate(
+      offset: Tween<Offset>(
+        begin: Offset.zero,
+        end: const Offset(0, -100),
+      ).evaluate(insertForwardController),
       child: child,
     );
 

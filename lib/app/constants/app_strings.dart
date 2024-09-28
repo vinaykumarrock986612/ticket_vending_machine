@@ -14,4 +14,12 @@ class AppStrings {
   static const terminal = "Terminal";
   static const gate = "Gate";
   static const busNumber = "Bus Number";
+  static const insertCard = "Insert Card";
+  static const verifyingYourCard = "Verifying your card..";
+  static const waitingForOTP = "Waiting for OTP";
+  static const allDone = "All Done!";
+  static const printingYourTicket = "Printing Your Ticket";
+  static const bookingDone = "Booking Done";
+  static const start = "Start";
+  static const restart = "Restart";
 }

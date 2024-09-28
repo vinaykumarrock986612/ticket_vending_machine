@@ -5,9 +5,12 @@ import '../utils/app_extensions.dart';
 class GradientShadowBox extends StatelessWidget {
   final Widget? child;
 
+  final double intensity;
+
   const GradientShadowBox({
     super.key,
     this.child,
+    this.intensity = 1,
   });
 
   @override
@@ -21,19 +24,19 @@ class GradientShadowBox extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: theme.colors.gradient[0].withOpacity(0.3),
+            color: theme.colors.gradient[0].withOpacity(0.3 * intensity),
             blurRadius: 200,
             spreadRadius: 0,
             offset: const Offset(0, -30),
           ),
           BoxShadow(
-            color: theme.colors.gradient[2].withOpacity(0.3),
+            color: theme.colors.gradient[2].withOpacity(0.3 * intensity),
             blurRadius: 200,
             spreadRadius: 0,
             offset: const Offset(0, 30),
           ),
           BoxShadow(
-            color: theme.colors.gradient[1].withOpacity(0.4),
+            color: theme.colors.gradient[1].withOpacity(0.4 * intensity),
             blurRadius: 100,
             spreadRadius: 4,
             offset: const Offset(0, 0),

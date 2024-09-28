@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app/config/theme.dart';
 import 'app/constants/app_strings.dart';
-import 'app/screen/home/home_screen.dart';
+import 'app/screen/initial_screen/initial_screen.dart';
 import 'app/utils/app_scroll_behavior.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       scrollBehavior: const AppScrollBehavior(),
       theme: lightTheme(),
-      home: const HomeScreen(),
+      home: const InitialScreen(),
       builder: builder,
     );
   }

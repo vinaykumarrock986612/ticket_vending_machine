@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../constants/app_assets.dart';
 import 'svg_icon_button.dart';
 
+const kAppBarHeight = 64.0;
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final bool? alignCenter;
@@ -38,5 +40,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size(double.infinity, 64);
+  Size get preferredSize => const Size(double.infinity, kAppBarHeight);
 }

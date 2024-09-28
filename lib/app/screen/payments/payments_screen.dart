@@ -44,7 +44,7 @@ class _PaymentScreenState extends BaseState<PaymentScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.endOfFrame.then((value) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final box = cardKey.currentContext?.findAncestorRenderObjectOfType() as RenderBox?;
       cardWidth = box?.size.width ?? 322;
       setState(() {});
