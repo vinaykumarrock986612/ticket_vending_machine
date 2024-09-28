@@ -134,3 +134,5 @@ app.*.symbols
 
 .fvm/flutter_sdk
 /.idea/
+/firebase.json
+/.firebaserc

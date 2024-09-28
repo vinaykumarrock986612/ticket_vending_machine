@@ -2,15 +2,19 @@
 
 Attempt to create ticket vending machine UX in Flutter.
 
-## Getting Started
+## Preview
 
-This project is a starting point for a Flutter application.
+<img src="https://raw.githubusercontent.com/vinaykumarrock986612/ticket_vending_machine/refs/heads/main/readme_assets/recording.gif" width="300"/>
 
-A few resources to get you started if this is your first Flutter project:
+Design credits:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [Jitu Raut](https://www.linkedin.com/in/jitendra-raut/)
+- [Open Figma](https://www.figma.com/community/file/1387741680681864005)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Contributing
+
+Feel free to open issues or submit pull requests. Contributions are always welcome!
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

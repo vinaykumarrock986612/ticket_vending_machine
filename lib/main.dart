@@ -31,9 +31,12 @@ class MyApp extends StatelessWidget {
     return Align(
       child: Container(
         width: 360,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           boxShadow: [
-            BoxShadow(),
+            BoxShadow(
+              blurRadius: 25,
+              color: Colors.black.withOpacity(0.2),
+            ),
           ],
         ),
         child: child,
